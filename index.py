@@ -1,13 +1,44 @@
-import unittest
-from name_func import get_formatted_name
+from urllib.request import urlopen
 
-class NamesTest(unittest.TestCase):
+from bs4 import BeautifulSoup
 
-    def test_first(self):
-        form_text = get_formatted_name('Jackie', 'Chan')
-        self.assertEqual(form_text, 'Jackie Chan')
+# try:
+#     html = urlopen("http://pythonscraping.com/pages/page1.html")
+# except HTTPError as e:
+#     print(e)
+# except URLError:
+#     print("The server could not be found!")
+#     # bs = BeautifulSoup(html.read(), 'html.parser')
+# else:
+#     print("IT'S ALIVE")
 
-if __name__ == '__main__':
-    unittest.main()
+
+# def getTitle(url):
+#     try:
+#         html = urlopen(url)
+#     except HTTPError:
+#         return None
+#     try:
+#         bs = BeautifulSoup(html.read(), "html.parser")
+#         nameList = bs.find_all("span", {"class": "green"})
+#         # title = bs.body.h1
+#         for name in nameList:
+#             print(name.get_text())
+
+#     except AttributeError:
+#         return None
+#     return name.get_text()
 
 
+# title = getTitle("http://www.pythonscraping.com/pages/page1.html")
+
+# if title == None:
+#     print("Title could not be found")
+# else:
+#     print(title)
+
+html = urlopen("http://www.pythonscraping.com/pages/page3.html")
+bs = BeautifulSoup(html, "html.parser")
+
+for child in bs.find("table", {"id": "giftList"}).children:
+    print(child)
