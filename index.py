@@ -1,89 +1,41 @@
-import datetime
-import random
-from urllib.request import Request, urlopen
+import os
+from urllib.parse import urlparse
+from urllib.request import urlopen, urlretrieve
 
 from bs4 import BeautifulSoup
 
-random.seed(datetime.datetime.now().timestamp())
+downloadDir = "downloaded"
+baseUrl = "https://pythonscraping.com/"
+baseNetloc = urlparse(baseUrl).netloc
 
 
-# pages = set()
+def getAbsoluteURL(source):
+    if urlparse(baseUrl).netloc == "":
+        return baseUrl + source
+    return source
 
 
-# def getLinks(articleUrl):
-#     req = Request(
-#         f"http://en.wikipedia.org{articleUrl}",
-#         headers={
-#             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-#         },
-#     )
-#     html = urlopen(req)
-#     bs = BeautifulSoup(html, "html.parser")
+def getDownloadPath(fileUrl):
+    parsed = urlparse(fileUrl)
+    netloc = parsed.netloc.strip("/")
+    path = parsed.path.strip("/")
+    localfile = f"{downloadDir}/{netloc}/{path}"
 
-#     try:
-#         print(bs.h1.getText())
-#         bodyContent = bs.find("div", {"id": "bodyContent"}).find_all("p")
-#         if len(bodyContent):
-#             print(bodyContent[0])
-#         print(bs.find(id="ca-edit").find("a").attrs["href"])
-#         print(bs.h1.get_text())
-#         print(bs.find(id="mw-content-text").find_all("p")[0])
-#         print(bs.find(id="ca-edit").find("span").find("a").attrs["href"])
-#     except AttributeError:
-#         print("This page is missing something! Continuing.")
-
-#     for link in bs.find_all("a", href=re.compile("^(/wiki/)")):
-#         if "href" in link.attrs:
-#             if link.attrs["href"] not in pages:
-#                 newPage = link.attrs["href"]
-#                 print("-" * 20)
-#                 print(newPage)
-#                 pages.add(newPage)
-#                 getLinks(newPage)
+    localpath = "/".join(localfile.split("/")[:-1])
+    if not os.path.exists(localpath):
+        os.makedirs(localpath)
+    return localfile
 
 
-# getLinks("/wiki/Kevin_Bacon")
+html = urlopen(baseUrl)
+bs = BeautifulSoup(html, "html.parser")
+downloadList = bs.find_all(src=True)
 
-
-class Content:
-    def __init__(self, url, title, body):
-        self.url = url
-        self.title = title
-        self.body = body
-
-    def print(self):
-        print(f"TITLE: {self.title}")
-        print(f"URL: {self.url}")
-        print(f"BODY:\n {self.body}")
-
-
-def scrapeCNN(url):
-    bs = BeautifulSoup(urlopen(url))
-    title = bs.find("h1").text
-    body = bs.find("div", {"class": "article__content"}).text
-    print("body: ")
-    print(body)
-    return Content(url, title, body)
-
-
-def scrapeBrookings(url):
-    req = Request(
-        url,
-        headers={
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        },
-    )
-    html = urlopen(req)
-    bs = BeautifulSoup(html, "html.parser")
-    title = bs.find("h1")
-    body = bs.find("div", {"class": "post-body"})
-    return Content(url, title, body)
-
-
-url = "https://www.brookings.edu/research/robotic-rulemaking/"
-content = scrapeBrookings(url)
-content.print()
-
-url = "https://www.cnn.com/2023/04/03/investing/dogecoin-elon-musk-twitter/index.html"
-content = scrapeCNN(url)
-content.print()
+for download in downloadList:
+    fileUrl = getAbsoluteURL(download["src"])
+    if fileUrl is not None:
+        try:
+            urlretrieve(fileUrl, getDownloadPath(fileUrl))
+            print(fileUrl)
+        except Exception as e:
+            print(f"Could not retrieve {fileUrl} Error: {e}")
