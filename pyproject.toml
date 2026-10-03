@@ -1,2 +1,23 @@
-[tool.ruff.lint]
-ignore = ["F401"]
+[project]
+name = "scraper"
+version = "0.1.0"
+description = "Professional price tracker: Playwright + SQLAlchemy"
+requires-python = ">=3.11"
+dependencies = [
+    "sqlalchemy>=2.0",
+    "psycopg2-binary>=2.9",
+    "playwright>=1.40",
+    "beautifulsoup4>=4.12",
+    "lxml>=5.0",
+    "pydantic-settings>=2.0",
+    "typer>=0.12",
+    "loguru>=0.7",
+    "python-dotenv>=1.0",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["scraper*"]

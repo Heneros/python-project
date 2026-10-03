@@ -1,0 +1,14 @@
+Metadata-Version: 2.4
+Name: scraper
+Version: 0.1.0
+Summary: Professional price tracker: Playwright + SQLAlchemy
+Requires-Python: >=3.11
+Requires-Dist: sqlalchemy>=2.0
+Requires-Dist: psycopg2-binary>=2.9
+Requires-Dist: playwright>=1.40
+Requires-Dist: beautifulsoup4>=4.12
+Requires-Dist: lxml>=5.0
+Requires-Dist: pydantic-settings>=2.0
+Requires-Dist: typer>=0.12
+Requires-Dist: loguru>=0.7
+Requires-Dist: python-dotenv>=1.0
