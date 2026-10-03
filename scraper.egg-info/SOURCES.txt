@@ -2,6 +2,7 @@ pyproject.toml
 scraper/__init__.py
 scraper/config.py
 scraper/init_db.py
+scraper/test_fetcher.py
 scraper.egg-info/PKG-INFO
 scraper.egg-info/SOURCES.txt
 scraper.egg-info/dependency_links.txt
@@ -10,3 +11,6 @@ scraper.egg-info/top_level.txt
 scraper/db/__init__.py
 scraper/db/base.py
 scraper/db/models.py
+scraper/fetchers/__init__.py
+scraper/fetchers/base.py
+scraper/fetchers/playwright_fetcher.py
